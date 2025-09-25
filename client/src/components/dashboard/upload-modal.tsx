@@ -27,12 +27,12 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
   const queryClient = useQueryClient();
 
   const { data: campaigns } = useQuery<Array<{id: string, name: string}>>({
-  queryKey: ["/api/campaigns/campaigns"],
+  queryKey: ["http://localhost:8000/api/email-campaigns"],
   });
 
   const uploadMutation = useMutation({
     mutationFn: async ({ campaignId, csvData }: { campaignId: string; csvData: string }) => {
-      const res = await apiRequest("POST", "/api/leads/upload", { campaignId, csvData });
+      const res = await apiRequest("POST", "http://localhost:8000/api/leads/upload", { campaignId, csvData });
       return await res.json();
     },
     onSuccess: (data) => {
@@ -40,9 +40,9 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
         title: "Upload successful",
         description: data.message,
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/campaigns/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/activity"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/usage"] });
+      queryClient.invalidateQueries({ queryKey: ["http://localhost:8000/api/campaigns/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["http://localhost:8000/api/activity"] });
+      queryClient.invalidateQueries({ queryKey: ["http://localhost:8000/api/usage"] });
       onClose();
       setSelectedFile(null);
       setSelectedCampaign("");
